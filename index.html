@@ -3,8 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Juego 2d</title>
-    <!--Title es el titulo de la pagina-->
+    <title>Gamedev Canvas Workshop - lesson 10: finishing up</title>
     <style>
         * {
             padding: 0;
@@ -16,15 +15,12 @@
             display: block;
             margin: 0 auto;
         }
-        /*dentro de la funcion canvas, esta todo el diseño del marco del juego*/
-        
     </style>
 </head>
 
 <body>
 
     <canvas id="myCanvas" width="480" height="320"></canvas>
-    <!--El width es para el ancho del marco, y el height para la altura del marco-->
 
     <script>
         var canvas = document.getElementById("myCanvas");
@@ -48,7 +44,6 @@
         var brickOffsetLeft = 30;
         var score = 0;
         var lives = 3;
-        //se usa var para definir las variables de la puntuacion, las vidas, etc
 
         var bricks = [];
         for (var c = 0; c < brickColumnCount; c++) {
@@ -57,12 +52,10 @@
                 bricks[c][r] = { x: 0, y: 0, status: 1 };
             }
         }
-        //funcion que cuenta cuantos ladrillos se rompen
 
         document.addEventListener("keydown", keyDownHandler, false);
         document.addEventListener("keyup", keyUpHandler, false);
         document.addEventListener("mousemove", mouseMoveHandler, false);
-
 
         function keyDownHandler(e) {
             if (e.code == "ArrowRight") {
@@ -86,8 +79,6 @@
                 paddleX = relativeX - paddleWidth / 2;
             }
         }
-        //estas funciones nos permite mover el paddle atravez del mouse y de las teclas definiendolas en izquierda (37) y derecha (39)
-        
         function collisionDetection() {
             for (var c = 0; c < brickColumnCount; c++) {
                 for (var r = 0; r < brickRowCount; r++) {
@@ -98,7 +89,7 @@
                             b.status = 0;
                             score++;
                             if (score == brickRowCount * brickColumnCount) {
-                                alert("Ganaste, felicidades!");
+                                alert("Ganaste, Felicidades!");
                                 document.location.reload();
                             }
                         }
@@ -106,7 +97,6 @@
                 }
             }
         }
-// esta funcion recorrera con un bucle todos los ladrillos y comparará la posición de cada uno con la posición de la bola
 
         function drawBall() {
             ctx.beginPath();
@@ -149,6 +139,7 @@
             ctx.fillStyle = "#0095DD";
             ctx.fillText("Lives: " + lives, canvas.width - 65, 20);
         }
+        //estas funciones muestran el puntaje y la cantidad de vidas
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -161,25 +152,27 @@
 
             if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
                 dx = -dx;
-            }
+            } // maneja las colisiones con los bordes laterales del lienzo, cambiando la dirección de la pelota si colisiona con alguno de los bordes
             if (y + dy < ballRadius) {
                 dy = -dy;
-            }
+            } //maneja las colisiones con el borde superior invirtiendo la direccion de la pelota
             else if (y + dy > canvas.height - ballRadius) {
                 if (x > paddleX && x < paddleX + paddleWidth) {
                     dy = -dy;
                 }
+                //maneja las colisiones con el borde inferior
+                //si la pelota está sobre la paleta, invierte la dirección vertical. Si no está sobre la paleta, decrementa las vidas y reinicia la posición de la pelota y la paleta 
                 else {
                     lives--;
                     if (!lives) {
-                        alert("Game Over");
+                        alert("Perdiste");
                         document.location.reload();
                     }
                     else {
                         x = canvas.width / 2;
                         y = canvas.height - 30;
-                        dx = 2;
-                        dy = -2;
+                        dx = 3;
+                        dy = -3;
                         paddleX = (canvas.width - paddleWidth) / 2;
                     }
                 }
@@ -193,8 +186,8 @@
             }
 
             x += dx;
-            y += dy;
-            requestAnimationFrame(draw);
+            y += dy; //actualiza las cordenadas de la bola en cada fotograma
+            requestAnimationFrame(draw); //crea un bucle de animacion en el navegador
         }
 
         draw();
